@@ -1,0 +1,54 @@
+realtek wireless adaptor 802.11n driver for Linux
+
+
+first need to check that the WiFi adaptor is recognised by your computer using:
+$ lsusb 
+
+Now if it is true then you can go and there some variant of drivers available for the wifi adapters so you need to check.In my case the driver rtl8188fu worked fine and supported.But in your case it may be different.
+
+https://github.com/kelebek333/rtl8188fu
+
+
+you need to have disabled Secure Boot in the BIOS of your computer.
+
+After that I go to the github and get the required commands in aterminal.And all set after a reboot.commands are
+
+sudo apt-get install build-essential git dkms linux-headers-$(uname -r)
+git clone https://github.com/kelebek333/rtl8188fu
+sudo dkms add ./rtl8188fu
+sudo dkms build rtl8188fu/1.0
+sudo dkms install rtl8188fu/1.0
+sudo cp ./rtl8188fu/firmware/rtl8188fufw.bin /lib/firmware/rtlwifi/
+
+sudo mkdir -p /etc/modprobe.d/
+sudo touch /etc/modprobe.d/rtl8188fu.conf
+echo "options rtl8188fu rtw_power_mgnt=0 rtw_enusbss=0" | sudo tee /etc/modprobe.d/rtl8188fu.conf
+
+
+sudo add-apt-repository ppa:kelebek333/kablosuz
+sudo apt-get update
+sudo apt install rtl8188fu-dkms
+
+
+
+-------------
+Now if you want to uninstall it can be done by:
+sudo dkms remove rtl8188fu/1.0 --all
+sudo rm -f /lib/firmware/rtlwifi/rtl8188fufw.bin
+sudo rm -f /etc/modprobe.d/rtl8188fu.conf
+
+sudo apt purge rtl8188fu-dkms
+
+========================================
+run this command and reboot your system: 
+sudo apt-get install build-essential git dkms
+
+
+
+for checking the wifi is added to your system or not, using this command: 
+$ lshw -C network 
+
+you should show wireless intesrface.
+
+https://dev.to/darkdebo/how-to-use-the-wifi-in-ubuntu-20-04-using-realtek-semiconductor-802-11n-53c0
+ 
